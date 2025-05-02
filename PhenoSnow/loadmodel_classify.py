@@ -7,7 +7,7 @@ from .preproccessor import *
 
 class LoadModel():
     
-    def __init__(self,site,file_list,img_path,out_path,mask_inf,model1,model2,GBCC_snow90,veg_type='SH',snow_baseline=0,random_state=11):
+    def __init__(self,site,file_list,img_path,out_path,mask_inf,model1,model2,GBCC_snow90,veg_type='SH',snow_baseline=0,random_state=11,write=True):
         
         super(LoadModel, self).__init__()
         self.site = site
@@ -19,6 +19,9 @@ class LoadModel():
         self.model2 = model2
         self.snow_baseline = snow_baseline
         self.random_state = random_state
+        self.color1 = [255, 255, 255]
+        self.color2 = [0, 0, 0]
+        self.write = write
         self.veg_type = veg_type
         self.GBCC_snow90 = GBCC_snow90
         
@@ -49,7 +52,31 @@ class LoadModel():
             res3[res3 > 1] = 1
 
             GBCC = cp.nanmean((BGR_data[:, 1] - BGR_data[:, 0]) / cp.sum(BGR_data, axis=1))
+            if self.write == True:
+                img_cv = cv.imread(self.img_path + self.file_list[i])
+                mask_cv = cv.imread(self.mask_inf, 0)
+                mask_cv = mask_cv + 1
+                mask_cv[mask_cv > 0] = 255
 
+                if img_cv.shape[:2] == mask_cv.shape:
+                    mask = mask_cv
+                else:
+                    mask = cv.resize(mask_cv, dsize=(img_cv.shape[1], img_cv.shape[0]), interpolation=cv.INTER_NEAREST)
+
+                img_svm1 = cp.zeros_like(img_cv)
+                img_svm1[mask == 255] = cp.asarray([self.color2, self.color1])[res1]
+
+                img_svm2 = cp.zeros_like(img_cv)
+                img_svm2[mask == 255] = cp.asarray([self.color2, self.color1])[res2]
+
+                img_svm1 = cp.uint8(img_svm1.get())
+                img_svm2 = cp.uint8(img_svm2.get())
+                dst = cv.bitwise_and(img_cv, img_cv, mask=mask)
+
+                panorama = cv.hconcat([dst, img_svm1, img_svm2])
+                os.makedirs(self.out_path + self.site + '/', exist_ok=True)
+                cv.imwrite(self.out_path + self.site + '/' + self.file_list[i], panorama)
+                
             file_inf = self.file_list[i].split('_')
             site = file_inf[0]
             year = file_inf[1]
