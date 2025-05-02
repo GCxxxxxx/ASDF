@@ -29,7 +29,7 @@ for i in range(len(site_list)):
     file_list = os.listdir(path_site)
     out_path = outp2 + site + '/'
     os.makedirs(out_path, exist_ok=True)
-    res = loadmodel_classify.LoadModel(site, file_list, path_site, out_path, mask_site, model1, model2,res[1],
+    res = loadmodel_classify.LoadModel(site, file_list, path_site, out_path, mask_site, model1, model2, model2,res[1],
                                        veg_type=veg_type).classify()
     
 
