@@ -35,4 +35,4 @@ Contents Description
 
 The test_run.py is the startup file used to run the entire ASDF process. The process can be executed after placing the image time series in the input folder and specifying the paths of the site_list.csv, mask files, and output folder.
 
-The demo folder contains pre-trained models and input files. Please complete the specified path in the demo.py file and then execute it.
+The demo folder contains pre-trained models and input files. Please complete the paths in the demo.py file and then execute it.
