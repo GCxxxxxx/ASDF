@@ -32,4 +32,6 @@ Contents Description
 └── demo/              # Quick demonstration (Using pre-trained models)  
 ```
 
+The test_run.py is the startup file for running the entire ASDF process. After placing the image time series in the input folder and specifying the paths of the site_list.csv, mask files, and output folder, the process can be executed.
 
+The demo folder contains pre-trained models and input files. Complete the path in the demo.py and run it.
